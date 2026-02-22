@@ -18,6 +18,10 @@ def sync():
             cards.append(Card(
                 id=item["id"],
                 url=item["url"],
+                name=item["name"],
+                variation=item["variation"],
+                edition=item["edition"],
+                is_foil=item["is_foil"],
                 nm_price=cv.get("nm_price"),
                 nm_qty=cv.get("nm_qty", 0),
                 ex_price=cv.get("ex_price"),

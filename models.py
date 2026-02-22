@@ -6,6 +6,10 @@ class Card(Base):
 
     id = Column(Integer, primary_key=True)
     url = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
+    variation = Column(String)
+    edition = Column(String)
+    is_foil = Column(String)
     nm_price = Column(String)
     nm_qty = Column(Integer)
     ex_price = Column(String)
