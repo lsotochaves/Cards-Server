@@ -1,6 +1,7 @@
-def main():
-    print("Hello from cards-server!")
+from fastapi import FastAPI
 
+app = FastAPI()
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def home():
+    return {"status": "alive"}
