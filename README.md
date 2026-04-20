@@ -25,7 +25,7 @@ The original cart-population tool had to visit every card's page in the browser 
 ### Installation
 
 ```bash
-git clone https://github.com/<your-username>/Cards-Server.git
+git clone https://github.com/lsotochaves/Cards-Server.git
 cd Cards-Server
 uv sync
 ```
