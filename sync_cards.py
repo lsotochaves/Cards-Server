@@ -2,7 +2,9 @@ import requests
 from db import SessionLocal
 from models import Card
 
+
 def sync():
+    # Fetch the full card catalog from Card Kingdom's API
     print("Fetching pricelist...")
     data = requests.get("https://api.cardkingdom.com/api/v2/pricelist").json()["data"]
     print(f"Got {len(data)} cards.")
@@ -10,28 +12,34 @@ def sync():
     session = SessionLocal()
 
     try:
+        # Wipe existing cards so we start fresh each sync
         session.query(Card).delete()
 
+        # Build Card objects from the API response
         cards = []
         for item in data:
             cv = item.get("condition_values", {})
-            cards.append(Card(
-                id=item["id"],
-                url=item["url"],
-                name=item["name"],
-                variation=item["variation"],
-                edition=item["edition"],
-                is_foil=item["is_foil"],
-                nm_price=cv.get("nm_price"),
-                nm_qty=cv.get("nm_qty", 0),
-                ex_price=cv.get("ex_price"),
-                ex_qty=cv.get("ex_qty", 0),
-                vg_price=cv.get("vg_price"),
-                vg_qty=cv.get("vg_qty", 0),
-                g_price=cv.get("g_price"),
-                g_qty=cv.get("g_qty", 0),
-            ))
+            cards.append(
+                Card(
+                    id=item["id"],
+                    url=item["url"],
+                    name=item["name"],
+                    variation=item["variation"],
+                    edition=item["edition"],
+                    is_foil=item["is_foil"],
+                    # Price and stock for each condition tier
+                    nm_price=cv.get("nm_price"),
+                    nm_qty=cv.get("nm_qty", 0),
+                    ex_price=cv.get("ex_price"),
+                    ex_qty=cv.get("ex_qty", 0),
+                    vg_price=cv.get("vg_price"),
+                    vg_qty=cv.get("vg_qty", 0),
+                    g_price=cv.get("g_price"),
+                    g_qty=cv.get("g_qty", 0),
+                )
+            )
 
+        # Bulk insert and commit
         session.add_all(cards)
         session.commit()
         print(f"Saved {len(cards)} cards to database.")
@@ -40,6 +48,7 @@ def sync():
         print(f"Error: {e}")
     finally:
         session.close()
+
 
 if __name__ == "__main__":
     sync()
